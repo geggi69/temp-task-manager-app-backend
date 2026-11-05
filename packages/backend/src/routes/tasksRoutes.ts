@@ -1,10 +1,11 @@
 import { Router } from 'express';
-import { listTasks } from '../controllers/tasksController';
+import { createTask, listTasks } from '../controllers/tasksController';
 
 const router = Router();
 
 // GET is wired so learners can confirm the backend and frontend are connected.
 router.get('/', listTasks);
+router.post('/', createTask);
 
 // GET    /api/tasks
 // POST   /api/tasks

@@ -1,4 +1,6 @@
 import { Request, Response } from 'express';
+import { createTaskBodySchema } from '../schemas/task';
+import { createTask as addTask } from '../store/taskStore';
 
 /**
  * Temporary helper so the starter app runs before learners implement the API.
@@ -17,10 +19,18 @@ export function listTasks(_req: Request, res: Response): void {
   res.json([]);
 }
 
-export function createTask(_req: Request, res: Response): void {
-  // TODO for Copilot: validate req.body with createTaskBodySchema.safeParse,
-  // call store.createTask, and return 201 with the created task.
-  notImplemented(res, 'POST /api/tasks');
+export function createTask(req: Request, res: Response): void {
+  const result = createTaskBodySchema.safeParse(req.body);
+  if (!result.success) {
+    res.status(400).json({
+      error: 'validation_error',
+      message: 'Request body validation failed',
+      details: result.error.issues,
+    });
+    return;
+  }
+
+  res.status(201).json(addTask(result.data));
 }
 
 export function patchTask(_req: Request, res: Response): void {
